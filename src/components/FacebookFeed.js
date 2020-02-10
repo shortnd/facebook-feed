@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import FeedItem from './FeedItem';
+import PropType from 'prop-types';
 
-const FacebookFeed = ({ account, accessToken, fields, limit }) => {
+const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
   const [feed, setFeed] = useState([]);
 
   // TODO: https://developers.facebook.com/docs/graph-api/reference/post/
@@ -13,15 +14,26 @@ const FacebookFeed = ({ account, accessToken, fields, limit }) => {
 
 
   useEffect(() => {
-    fetch(`https://graph.facebook.com/v5.0/${account}/posts?fields=${fields}&limit=${limit}&access_token=${accessToken}`).then(res => res.json()).then(res => setFeed(res.data));
+    let http = new XMLHttpRequest();
+    http.open("GET", "https://graph.facebook.com/v5.0/"+ account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken, false);
+    http.send();
+    let json = JSON.parse(http.responseText)
+    setFeed(json.data)
   }, [account, fields, limit, accessToken]);
 
   return (
     <>
       <h1>Facebook Feed</h1>
-      {feed.map(item => <li key={item.id}>{item.message ? item.message : item.story}</li>)}
+      {feed.map(item => <FeedItem key={item.id} item={item} />)}
     </>
   )
 };
+
+FacebookFeed.propTypes = {
+  account: PropType.string.isRequired,
+  accessToken: PropType.string.isRequired,
+  fields: PropType.string.isRequired,
+  limit: PropType.number
+}
 
 export default FacebookFeed
