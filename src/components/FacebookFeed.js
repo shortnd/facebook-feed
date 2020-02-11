@@ -14,11 +14,16 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
 
 
   useEffect(() => {
-    let http = new XMLHttpRequest();
-    http.open("GET", "https://graph.facebook.com/v5.0/"+ account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken, false);
-    http.send();
-    let json = JSON.parse(http.responseText)
-    setFeed(json.data)
+    async function socialFeed() {
+      try {
+        const response = await fetch("https://graph.facebook.com/v6.0/" + account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken);
+        const json = await response.json();
+        setFeed(json.data)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    socialFeed()
   }, [account, fields, limit, accessToken]);
 
   return (
