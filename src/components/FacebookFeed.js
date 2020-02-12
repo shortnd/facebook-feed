@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import FeedItem from './FeedItem';
 import PropType from 'prop-types';
+import styled from 'styled-components';
 
 const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
   const [feed, setFeed] = useState([]);
@@ -35,14 +36,9 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
   return (
     <>
       <h1>Facebook Feed</h1>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gridColumnGap: '15px',
-        gridRowGap: '15px'
-      }}>
+      <GridContainer>
         {feed.map(item => <FeedItem key={item.id} item={item} />)}
-      </div>
+      </GridContainer>
     </>
   )
 };
@@ -53,5 +49,15 @@ FacebookFeed.propTypes = {
   fields: PropType.string.isRequired,
   limit: PropType.number
 }
+
+const GridContainer = styled.div`
+  margin: 0 auto;
+  padding: 0 15px;
+  display: -ms-grid;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+`;
 
 export default FacebookFeed
