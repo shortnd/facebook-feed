@@ -15,10 +15,16 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
 
   useEffect(() => {
     async function socialFeed() {
+      const xhr = new XMLHttpRequest();
       try {
-        const response = await fetch("https://graph.facebook.com/v6.0/" + account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken);
-        const json = await response.json();
+        // const response = request.open("https://graph.facebook.com/v6.0/" + account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken);
+
+        // const response = await fetch();
+        xhr.open("GET", "https://graph.facebook.com/v6.0/" + account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken, false);
+        xhr.send();
+        const json = JSON.parse(xhr.responseText)
         setFeed(json.data)
+        // setFeed()
       } catch (e) {
         console.log(e)
       }
@@ -31,9 +37,9 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
       <h1>Facebook Feed</h1>
       <div style={{
         display: 'grid',
-        'grid-template-columns': 'repeat(auto-fit, minmax(300px, 1fr))',
-        'grid-column-gap': '15px',
-        'grid-row-gap': '15px'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gridColumnGap: '15px',
+        gridRowGap: '15px'
       }}>
         {feed.map(item => <FeedItem key={item.id} item={item} />)}
       </div>
