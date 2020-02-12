@@ -4,13 +4,16 @@ import PropTypes from 'prop-types'
 const FeedItem = ({ item }) => {
   const { from: { name }, message, permalink_url, full_picture, story, picture, actions} = item;
   return (
-    <div className="shadow rounded border w-1/2 overflow-hidden p-3">
+    <div className="shadow rounded border overflow-hidden p-3">
       <h2>
         <a href={permalink_url}>
           <img src={picture} alt={`${name} logo`} />
           {name}
         </a>
       </h2>
+      <section>
+        <img src={full_picture}  alt="blah"/>
+      </section>
       <section className="mb-3 px-3">
         {message}
       </section>

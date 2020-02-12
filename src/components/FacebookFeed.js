@@ -29,7 +29,14 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
   return (
     <>
       <h1>Facebook Feed</h1>
-      {feed.map(item => <FeedItem key={item.id} item={item} />)}
+      <div style={{
+        display: 'grid',
+        'grid-template-columns': 'repeat(auto-fit, minmax(300px, 1fr))',
+        'grid-column-gap': '15px',
+        'grid-row-gap': '15px'
+      }}>
+        {feed.map(item => <FeedItem key={item.id} item={item} />)}
+      </div>
     </>
   )
 };
