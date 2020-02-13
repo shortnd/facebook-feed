@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
 import FeedItem from './FeedItem';
 import PropType from 'prop-types';
+import { getFeed } from '../actions';
 import styled from 'styled-components';
 
-const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
-  const [feed, setFeed] = useState([]);
+const FacebookFeed = ({ feed, isLoaded, loadedAt, getFeed, account, accessToken, fields, limit }) => {
 
   // TODO: https://developers.facebook.com/docs/graph-api/reference/post/
 
@@ -15,24 +17,11 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
 
 
   useEffect(() => {
-    async function socialFeed() {
-      const xhr = new XMLHttpRequest();
-      try {
-        // const response = request.open("https://graph.facebook.com/v6.0/" + account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken);
-
-        // const response = await fetch();
-        xhr.open("GET", "https://graph.facebook.com/v6.0/" + account + "/posts?fields=" + fields + "&limit=" + limit + "&access_token=" + accessToken, false);
-        xhr.send();
-        const json = JSON.parse(xhr.responseText)
-        setFeed(json.data)
-        // setFeed()
-      } catch (e) {
-        console.log(e)
-      }
+    const oneHour = 60 * 60 * 1000;
+    if (!isLoaded || ((new Date() - new Date(loadedAt)) > oneHour)) {
+      getFeed(account, fields, limit, accessToken);
     }
-    socialFeed()
-  }, [account, fields, limit, accessToken]);
-
+  }, [accessToken, account, fields, getFeed, isLoaded, limit, loadedAt]);
   return (
     <>
       <h1>Facebook Feed</h1>
@@ -42,6 +31,16 @@ const FacebookFeed = ({ account, accessToken, fields, limit = 10 }) => {
     </>
   )
 };
+
+const mapStateToProps = state => ({
+  feed: state.feeds.posts,
+  isLoaded: state.feeds.postsLoaded,
+  loadedAt: state.feeds.postsLoadedAt
+});
+
+const mapDispatchToState = dispatch => bindActionCreators({
+  getFeed
+}, dispatch)
 
 FacebookFeed.propTypes = {
   account: PropType.string.isRequired,
@@ -60,4 +59,4 @@ const GridContainer = styled.div`
   grid-row-gap: 15px;
 `;
 
-export default FacebookFeed
+export default connect(mapStateToProps, mapDispatchToState)(FacebookFeed)
