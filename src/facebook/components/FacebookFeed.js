@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import FeedItem from './FeedItem';
@@ -6,7 +6,7 @@ import PropType from 'prop-types';
 import { getFeed } from '../actions';
 import styled from 'styled-components';
 
-const FacebookFeed = ({ feed, isLoaded, loadedAt, getFeed, account, accessToken, fields, limit }) => {
+const FacebookFeed = ({ feed, isLoaded, loadedAt, getFeed, account, accessToken, fields, limit, children }) => {
 
   // TODO: https://developers.facebook.com/docs/graph-api/reference/post/
 
